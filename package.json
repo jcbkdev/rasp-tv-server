@@ -1,0 +1,23 @@
+{
+    "name": "rasp-tv-server",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "nodemon"
+    },
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "better-sqlite3": "^11.9.0",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2"
+    },
+    "devDependencies": {
+        "@types/better-sqlite3": "^7.6.12",
+        "@types/express": "^5.0.0",
+        "nodemon": "^3.1.9",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.2"
+    }
+}
