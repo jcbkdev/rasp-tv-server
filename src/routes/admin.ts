@@ -5,8 +5,9 @@ import { setupDatabase } from "../db/db.setup";
 import { db, getUser } from "../db/db";
 import { isAuthenticated, userAuth } from "../db/db.auth";
 import { Channel } from "../db/db.types";
-import { addChannel } from "../db/db.channels";
+import { addChannel, getChannel } from "../db/db.channels";
 import { authMiddleware } from "../middlewares/auth";
+import { addCategory } from "../db/db.categories";
 
 const router = Router();
 
@@ -50,6 +51,10 @@ router.get("/channels", authMiddleware, (req, res) => {
     res.sendFile(path.resolve(currentDirectory, "../pages/channels.html"));
 });
 
+router.get("/categories", authMiddleware, (req, res) => {
+    res.sendFile(path.resolve(currentDirectory, "../pages/categories.html"));
+});
+
 router.get("/test", (req, res) => {
     console.log(getUser("admin"));
     res.send(getUser("admin"));
@@ -57,6 +62,11 @@ router.get("/test", (req, res) => {
 
 router.post("/channel", authMiddleware, (req, res) => {
     addChannel(String(req.headers.channelname), String(req.headers.channelurl));
+    res.send(202);
+});
+
+router.post("/category", authMiddleware, (req, res) => {
+    addCategory(String(req.headers.categoryname));
     res.send(202);
 });
 

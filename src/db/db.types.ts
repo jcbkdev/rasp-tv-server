@@ -23,3 +23,8 @@ export interface Channel {
     channel_url: string;
     channel_logo: string;
 }
+
+export interface Category {
+    category_id: number;
+    category_name: string;
+}

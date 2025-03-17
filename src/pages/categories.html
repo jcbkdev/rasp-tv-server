@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RaspTv | Categories</title>
+    </head>
+    <body>
+        <form id="category-form">
+            <label for="category-name">Category</label>
+            <input type="text" name="category-name" id="category-name" />
+            <button type="submit">button</button>
+        </form>
+    </body>
+    <script>
+        const channelForm = document.getElementById("category-form");
+
+        channelForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(channelForm);
+
+            const dataObject = {};
+            formData.forEach((value, key) => {
+                dataObject[key] = value;
+            });
+
+            console.log(dataObject);
+
+            console.log(e);
+            fetch("/admin/category", {
+                method: "POST",
+                headers: {
+                    categoryName: dataObject["category-name"],
+                },
+            });
+        });
+    </script>
+</html>
