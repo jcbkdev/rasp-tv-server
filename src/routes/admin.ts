@@ -1,9 +1,9 @@
 import { Router } from "express";
-import path from "path"
+import path from "path";
 import { fileURLToPath } from "url";
-import { setupDatabase } from "../db/db.setup.js";
-import { db, getUser } from "../db/db.js";
-import { userAuth } from "../db/db.auth.js";
+import { setupDatabase } from "../db/db.setup";
+import { db, getUser } from "../db/db";
+import { userAuth } from "../db/db.auth";
 
 const router = Router();
 
@@ -18,14 +18,14 @@ router.get("/", (req, res) => {
     res.sendFile(path.resolve(__dirname, "../pages/channels.html"));
 });
 
-router.get("/test", (req,res) => {
-    userAuth("admin", "admin").then(console.log)
-    res.send(getUser("admin"))
-})
+router.get("/test", (req, res) => {
+    userAuth("admin", "admin").then(console.log);
+    res.send(getUser("admin"));
+});
 
 router.post("/db/setup", (req, res) => {
     setupDatabase(db);
     res.status(202).send();
-})
+});
 
 export default router;

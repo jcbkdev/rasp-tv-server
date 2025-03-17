@@ -10,3 +10,9 @@ export interface UserSession {
     user_id: number;
     us: string;
 }
+
+export interface AuthDetails {
+    user_id: number;
+    user_name: string;
+    us: string;
+}

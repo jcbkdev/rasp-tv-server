@@ -1,9 +1,9 @@
-import { getUser } from "./db.js";
+import { getUser } from "./db";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { Database } from "better-sqlite3";
-import { db } from "./db.js";
-import { UserSession } from "./db.types.js";
+import { db } from "./db";
+import { AuthDetails, UserSession } from "./db.types";
 
 function generateSessionId(length: number): string {
     const sessionId = crypto.randomBytes(length / 2).toString("hex");
@@ -65,7 +65,7 @@ function createSession(userId: number) {
 export async function userAuth(
     username: string,
     password: string
-): Promise<string | null> {
+): Promise<AuthDetails | null> {
     const user = getUser(username);
     const result = await bcrypt
         .compare(password, user.user_password)
@@ -75,10 +75,22 @@ export async function userAuth(
         });
 
     if (result) {
-        createSession(user.user_id);
         console.log(
             `Successful login\n\tuser: ${user.user_name}\n\tuser_id: ${user.user_id}`
         );
+        const us = createSession(user.user_id);
+        const authDetails: AuthDetails = {
+            user_id: user.user_id,
+            user_name: user.user_name,
+            us: us,
+        };
+
+        return authDetails;
     }
     return null;
+}
+
+export function isAuthenticated(user_id: number, sessionId: string) {
+    const dbUserSession = getSession(user_id);
+    return dbUserSession.us === sessionId;
 }
