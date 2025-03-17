@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "main.js",
     "scripts": {
-        "dev": "nodemon",
+        "dev": "nodemon src/main.ts",
         "test": "jest"
     },
     "author": "",
