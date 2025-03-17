@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div>
-        this is the channels page
-    </div>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RaspTv | Channels</title>
+    </head>
+    <body>
+        <form id="channel-form">
+            <label for="channel-name">Channel name</label>
+            <input type="text" name="channel-name" id="channel-name" />
+            <label for="channel-category">Channel category</label>
+            <select name="channel-category" id="channel-category">
+                <option value="">- - - - - -</option>
+            </select>
+            <label for="channel-url">Channel url</label>
+            <input type="text" name="channel-url" id="channel-url" />
+            <button type="submit">button</button>
+        </form>
+    </body>
+    <script>
+        const channelForm = document.getElementById("channel-form");
+
+        channelForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(channelForm);
+
+            const dataObject = {};
+            formData.forEach((value, key) => {
+                dataObject[key] = value;
+            });
+
+            console.log(dataObject);
+
+            console.log(e);
+            fetch("/admin/channel", {
+                method: "POST",
+                headers: {
+                    channelName: dataObject["channel-name"],
+                    channelCategory: dataObject["channel-category"],
+                    channelUrl: dataObject["channel-url"],
+                },
+            });
+        });
+    </script>
 </html>

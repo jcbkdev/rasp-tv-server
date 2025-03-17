@@ -4,6 +4,8 @@ import { fileURLToPath } from "url";
 import { setupDatabase } from "../db/db.setup";
 import { db, getUser } from "../db/db";
 import { userAuth } from "../db/db.auth";
+import { Channel } from "../db/db.types";
+import { addChannel } from "../db/db.channels";
 
 const router = Router();
 
@@ -18,8 +20,13 @@ router.get("/", (req, res) => {
 });
 
 router.get("/test", (req, res) => {
-    userAuth("admin", "admin").then(console.log);
+    console.log(getUser("admin"));
     res.send(getUser("admin"));
+});
+
+router.post("/channel", (req, res) => {
+    addChannel(String(req.headers.channelname), String(req.headers.channelurl));
+    res.send(202);
 });
 
 router.post("/db/setup", (req, res) => {

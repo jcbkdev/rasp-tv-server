@@ -16,3 +16,10 @@ export interface AuthDetails {
     user_name: string;
     us: string;
 }
+
+export interface Channel {
+    channel_id: number;
+    channel_name: string;
+    channel_url: string;
+    channel_logo: string;
+}
