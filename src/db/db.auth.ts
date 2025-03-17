@@ -90,7 +90,9 @@ export async function userAuth(
     return null;
 }
 
-export function isAuthenticated(user_id: number, sessionId: string) {
+export function isAuthenticated(user_id: number, sessionId: string): boolean {
     const dbUserSession = getSession(user_id);
     return dbUserSession.us === sessionId;
 }
+
+// export function isAuthenticatedByCookies(cookies): boolean {}

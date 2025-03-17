@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <form id="login-form" action="" method="post">
+            <input type="text" name="login-username" />
+            <input type="password" name="login-password" />
+            <button type="submit">login</button>
+        </form>
+    </body>
+    <script>
+        const loginForm = document.getElementById("login-form");
+
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(loginForm);
+
+            const dataObject = {};
+            formData.forEach((value, key) => {
+                dataObject[key] = value;
+            });
+
+            fetch("/admin/login", {
+                method: "POST",
+                headers: {
+                    username: dataObject["login-username"],
+                    password: dataObject["login-password"],
+                },
+            })
+                .then((response) => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                })
+                .catch((err) => {
+                    console.err(err);
+                });
+        });
+    </script>
+</html>
