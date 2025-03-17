@@ -7,15 +7,14 @@ import { userAuth } from "../db/db.auth";
 
 const router = Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const currentDirectory = path.resolve(__dirname);
 
 router.get("/", (req, res) => {
     // check if session is still active
     // if yes then redirect to dashboard
     // if no then redirect to login
 
-    res.sendFile(path.resolve(__dirname, "../pages/channels.html"));
+    res.sendFile(path.resolve(currentDirectory, "../pages/channels.html"));
 });
 
 router.get("/test", (req, res) => {

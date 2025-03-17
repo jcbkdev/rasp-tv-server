@@ -1,14 +1,14 @@
-import fs from "fs"
+import fs from "fs";
 import { Database } from "better-sqlite3";
-import { addUser } from "./db.js";
+import { addUser } from "./db";
 import path from "path";
 
 export function setupDatabase(db: Database): void {
-    try{
+    try {
         createDatabase(db);
-        createAdminAccount()
-    }catch(err){
-        console.error("An error occured while setting up a database", err)
+        createAdminAccount();
+    } catch (err) {
+        console.error("An error occured while setting up a database", err);
     }
 }
 
@@ -170,21 +170,28 @@ function createDatabase(db: Database): void {
     user_id ASC
     );
     `;
-    
+
     // Execute each statement individually for better error handling
-    const statements = sql.split(";").map(stmt => stmt.trim()).filter(stmt => stmt.length > 0);
+    const statements = sql
+        .split(";")
+        .map((stmt) => stmt.trim())
+        .filter((stmt) => stmt.length > 0);
 
     db.exec("BEGIN TRANSACTION;");
     try {
-        statements.forEach(stmt => {
+        statements.forEach((stmt) => {
             console.log("Executing:", stmt);
             try {
                 db.prepare(stmt).run();
             } catch (statementErr: any) {
                 // If it's just a warning about the table already existing, log and continue
-                if (statementErr.code === 'SQLITE_ERROR' && 
-                    statementErr.message.includes('already exists')) {
-                    console.log(`Warning: ${statementErr.message}. Continuing.`);
+                if (
+                    statementErr.code === "SQLITE_ERROR" &&
+                    statementErr.message.includes("already exists")
+                ) {
+                    console.log(
+                        `Warning: ${statementErr.message}. Continuing.`
+                    );
                 } else {
                     throw statementErr; // Re-throw other errors
                 }
