@@ -22,6 +22,7 @@ export interface Channel {
     channel_name: string;
     channel_url: string;
     channel_logo: string;
+    channel_category_id?: number;
 }
 
 export interface Category {

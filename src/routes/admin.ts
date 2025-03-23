@@ -5,7 +5,7 @@ import { setupDatabase } from "../db/db.setup";
 import { db, getUser } from "../db/db";
 import { isAuthenticated, userAuth } from "../db/db.auth";
 import { Channel } from "../db/db.types";
-import { addChannel, getChannel } from "../db/db.channels";
+import { addChannel, editChannel, getChannel } from "../db/db.channels";
 import { authMiddleware } from "../middlewares/auth";
 import { addCategory } from "../db/db.categories";
 
@@ -61,7 +61,16 @@ router.get("/test", (req, res) => {
 });
 
 router.post("/channel", authMiddleware, (req, res) => {
-    addChannel(String(req.headers.channelname), String(req.headers.channelurl));
+    addChannel(
+        String(req.body["channel-name"]),
+        String(req.body["channel-url"])
+    );
+    res.send(202);
+});
+
+router.put("/channel", authMiddleware, (req, res) => {
+    const channel = req.body as Channel;
+    editChannel(channel);
     res.send(202);
 });
 
