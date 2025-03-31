@@ -59,6 +59,15 @@ export function hasChannel(channel_id: number) {
     return Boolean(channel);
 }
 
+export function deleteChannel(channel_id: number) {
+    if (!hasChannel(channel_id)) return false;
+    const stmt = db.prepare(`DELETE FROM channel WHERE channel_id = ?`);
+
+    const result = stmt.run(channel_id);
+
+    return result;
+}
+
 export function getAllChannels(): Channel[] {
     const stmt = db.prepare(`
       SELECT c.*, r.category_id AS channel_category_id

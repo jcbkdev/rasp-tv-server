@@ -5,7 +5,12 @@ import { setupDatabase } from "../db/db.setup";
 import { db, getUser } from "../db/db";
 import { isAuthenticated, userAuth } from "../db/db.auth";
 import { Channel } from "../db/db.types";
-import { addChannel, editChannel, getChannel } from "../db/db.channels";
+import {
+    addChannel,
+    deleteChannel,
+    editChannel,
+    getChannel,
+} from "../db/db.channels";
 import { authMiddleware } from "../middlewares/auth";
 import { addCategory } from "../db/db.categories";
 
@@ -71,6 +76,14 @@ router.post("/channel", authMiddleware, (req, res) => {
 router.put("/channel", authMiddleware, (req, res) => {
     const channel = req.body as Channel;
     editChannel(channel);
+    res.send(202);
+});
+
+router.delete("/channel/:channel_id", authMiddleware, (req, res) => {
+    const { channel_id } = req.params;
+
+    deleteChannel(parseInt(channel_id));
+
     res.send(202);
 });
 
