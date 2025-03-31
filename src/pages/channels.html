@@ -4,239 +4,358 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>RaspTv | Channels</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  </body>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous"
+        />
+        <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"
+        ></script>
     </head>
-    <body>
-        <form id="channel-form">
-            <label for="channel-name">Channel name</label>
-            <input type="text" name="channel-name" id="channel-name" />
-            <label for="channel-url">Channel url</label>
-            <input type="text" name="channel-url" id="channel-url" />
-            <button type="submit">Submit</button>
-        </form>
-        <table id="channel-table"  class="table table-striped table-dark">
-            <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Url</th>
-                    <th scope="col">Logo</th>
-                    <th scope="col">Options</th>
-                </tr>
-            </thead>
-            <tbody id="channel-table-body"></tbody>
-        </table>
-    </body>
-    <style>
-        th {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 24ch;
-        }
-    </style>
-    <!-- getting channel list -->
-    <script>
-        let channels = []
+    <body class="bg-light">
+        <div class="container mt-5">
+            <!-- Channel Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Add New Channel</h4>
+                </div>
+                <div class="card-body">
+                    <form id="channel-form">
+                        <div class="mb-3">
+                            <label for="channel-name" class="form-label"
+                                >Channel Name</label
+                            >
+                            <input
+                                type="text"
+                                name="channel-name"
+                                id="channel-name"
+                                class="form-control"
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="channel-url" class="form-label"
+                                >Channel URL</label
+                            >
+                            <input
+                                type="text"
+                                name="channel-url"
+                                id="channel-url"
+                                class="form-control"
+                            />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-        async function loadChannels() {
-            const response = await fetch("/api/channels");
-            if (!response.ok) {
-                console.error("Could not get response");
-                return;
+            <!-- Channels Table -->
+            <div class="table-responsive">
+                <table
+                    id="channel-table"
+                    class="table table-striped table-bordered table-hover"
+                >
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Url</th>
+                            <th scope="col">Logo</th>
+                            <th scope="col">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody id="channel-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <style>
+            th,
+            td {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
-            const responseCategories = await fetch("/api/categories");
-            if (!response.ok) {
-                console.error("Failed to load categories");
-                return;
+            .form-label {
+                font-weight: 500;
             }
-            const categories = await responseCategories.json();
-            const categoriesMap = new Map(categories.map(c => [c.category_id, c.category_name]));
-            const responseJson = await response.json();
-            channels = responseJson;
-            const channelTableElement = document.getElementById("channel-table-body");
-            channelTableElement.innerHTML = responseJson.map(channel => `
-                <tr channel-id="${channel.channel_id}">
+
+            .card-header {
+                font-size: 1.25rem;
+                font-weight: bold;
+            }
+
+            .table th,
+            .table td {
+                vertical-align: middle;
+            }
+
+            .table td {
+                max-width: none;
+                overflow: visible;
+                text-overflow: clip;
+                word-wrap: break-word; /* Prevent overflow of text */
+            }
+
+            .table th,
+            .table td {
+                vertical-align: middle;
+            }
+
+            .table td:last-child {
+                width: auto;
+            }
+
+            .btn {
+                min-width: 100px;
+            }
+
+            /* Prevent horizontal overflow, fit the screen */
+            .table-responsive {
+                width: 100%;
+                overflow-x: hidden;
+            }
+
+            /* Ensure table adjusts to available width */
+            .table {
+                table-layout: fixed;
+                width: 100%;
+            }
+
+            .table th,
+            .table td {
+                word-wrap: break-word; /* Ensure words break and fit into cells */
+                white-space: normal; /* Allow the text to wrap in the cell */
+            }
+        </style>
+
+        <!-- Script for fetching and editing channels -->
+        <script>
+            let channels = [];
+            let originalChannelData = {};
+
+            async function loadChannels() {
+                const response = await fetch("/api/channels");
+                if (!response.ok) {
+                    console.error("Could not get response");
+                    return;
+                }
+
+                const responseCategories = await fetch("/api/categories");
+                if (!response.ok) {
+                    console.error("Failed to load categories");
+                    return;
+                }
+                const categories = await responseCategories.json();
+                const categoriesMap = new Map(
+                    categories.map((c) => [c.category_id, c.category_name])
+                );
+                const responseJson = await response.json();
+                channels = responseJson;
+                const channelTableElement =
+                    document.getElementById("channel-table-body");
+                channelTableElement.innerHTML = responseJson
+                    .map(
+                        (channel) => `
+                    <tr channel-id="${channel.channel_id}">
+                        <th scope="row">${channel.channel_id}</th>
+                        <td>${channel.channel_name}</td>
+                        <td>${
+                            categoriesMap.get(channel.channel_category_id) ??
+                            "- - - - -"
+                        }</td>
+                        <td>${channel.channel_url}</td>
+                        <td>${channel.channel_logo ?? "- - - - -"}</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="turnOnEditMode(${
+                                channel.channel_id
+                            })">Edit</button>
+                        </td>
+                    </tr>
+                `
+                    )
+                    .join("");
+            }
+
+            async function turnOnEditMode(channelId) {
+                console.log(channelId);
+
+                const row = document.querySelector(
+                    `[channel-id="${channelId}"]`
+                );
+                const channel = channels.find(
+                    (c) => c.channel_id === channelId
+                );
+
+                // Store the original channel data
+                originalChannelData[channelId] = { ...channel };
+
+                // Fetch categories from the API
+                const response = await fetch("/api/categories");
+                if (!response.ok) {
+                    console.error("Failed to load categories");
+                    return;
+                }
+                const categories = await response.json();
+
+                // Generate category dropdown
+                const categoryDropdown = `
+                    <select name="channel-category" class="form-select">
+                        <option value="">- - - - -</option>
+                        ${categories
+                            .map(
+                                (category) => `
+                            <option value="${category.category_id}" ${
+                                    category.category_id ===
+                                    channel.channel_category_id
+                                        ? "selected"
+                                        : ""
+                                }>
+                                ${category.category_name}
+                            </option>
+                        `
+                            )
+                            .join("")}
+                    </select>
+                `;
+
+                // Replace row content with editable fields
+                row.innerHTML = `
                     <th scope="row">${channel.channel_id}</th>
-                    <th>${channel.channel_name}</th>
-                    <th>${categoriesMap.get(channel.channel_category_id) ?? "- - - - -"}</th>
-                    <th>${channel.channel_url}</th>
-                    <th>${channel.channel_logo ?? "- - - - -"}</th>
-                    <th><button class="btn btn-primary" onclick="turnOnEditMode(${channel.channel_id})">Edit</button></th>
-                </tr>
-            `).join("");
-        }
-        
-        function handleButtonClick(channelId) {
-            console.log("Button clicked for channel:", channelId);
-        }
-        let originalChannelData = {};
+                    <td><input type="text" name="channel-name" value="${
+                        channel.channel_name
+                    }" class="form-control" /></td>
+                    <td>${categoryDropdown}</td>
+                    <td><input type="text" name="channel-url" value="${
+                        channel.channel_url
+                    }" class="form-control" /></td>
+                    <td><input type="text" name="channel-logo" value="${
+                        channel.channel_logo ?? ""
+                    }" class="form-control" /></td>
+                    <td>
+                        <button class="btn btn-success" onclick="saveChannelEdit(${
+                            channel.channel_id
+                        })">Save</button>
+                        <button class="btn btn-danger" onclick="deleteChannel(${
+                            channel.channel_id
+                        })">Delete</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit(${
+                            channel.channel_id
+                        })">Cancel</button>
+                    </td>
+                `;
+            }
 
-    async function turnOnEditMode(channelId) {
-        console.log(channelId);
+            async function saveChannelEdit(channelId) {
+                const row = document.querySelector(
+                    `[channel-id="${channelId}"]`
+                );
 
-        const row = document.querySelector(`[channel-id="${channelId}"]`);
-        const channel = channels.find(c => c.channel_id === channelId);
+                const updatedChannel = {
+                    channel_id: channelId,
+                    channel_name: row.querySelector(
+                        'input[name="channel-name"]'
+                    ).value,
+                    channel_url: row.querySelector('input[name="channel-url"]')
+                        .value,
+                    channel_logo: row.querySelector(
+                        'input[name="channel-logo"]'
+                    ).value,
+                    channel_category_id: row.querySelector(
+                        'select[name="channel-category"]'
+                    ).value,
+                };
 
-        // Store the original channel data
-        originalChannelData[channelId] = { ...channel };
+                const response = await fetch(`/admin/channel`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updatedChannel),
+                });
 
-        // Fetch categories from the API
-        const response = await fetch("/api/categories");
-        if (!response.ok) {
-            console.error("Failed to load categories");
-            return;
-        }
-        const categories = await response.json();
+                if (!response.ok) {
+                    console.error("Failed to update channel");
+                    return;
+                }
 
-        // Generate category dropdown
-        const categoryDropdown = `
-            <select name="channel-category" class="form-select">
-                <option value="">- - - - -</option>
-                ${categories.map(category => `
-                    <option value="${category.category_id}" ${category.category_id === channel.channel_category_id ? 'selected' : ''}>
-                        ${category.category_name}
-                    </option>
-                `).join('')}
-            </select>
-        `;
+                loadChannels();
+            }
 
-        // Replace row content with editable fields
-        row.innerHTML = `
-            <th scope="row">${channel.channel_id}</th>
-            <th><input type="text" name="channel-name" value="${channel.channel_name}" class="form-control" /></th>
-            <th>${categoryDropdown}</th>
-            <th><input type="text" name="channel-url" value="${channel.channel_url}" class="form-control" /></th>
-            <th><input type="text" name="channel-logo" value="${channel.channel_logo ?? ''}" class="form-control" /></th>
-            <th>
-                <button class="btn btn-success" onclick="saveChannelEdit(${channel.channel_id})">Save</button>
-                <button class="btn btn-danger" onclick="deleteChannel(${channel.channel_id})">Delete</button>
-                <button class="btn btn-secondary" onclick="cancelEdit(${channel.channel_id})">Cancel</button>
-            </th>
-        `;
-    }
+            async function deleteChannel(channelId) {
+                const response = await fetch(`/admin/channel/${channelId}`, {
+                    method: "DELETE",
+                });
 
-    async function saveChannelEdit(channelId) {
-        const row = document.querySelector(`[channel-id="${channelId}"]`);
+                if (!response.ok) {
+                    console.error("Failed to delete channel");
+                    return;
+                }
 
-        const updatedChannel = {
-            channel_id: channelId,
-            channel_name: row.querySelector('input[name="channel-name"]').value,
-            channel_url: row.querySelector('input[name="channel-url"]').value,
-            channel_logo: row.querySelector('input[name="channel-logo"]').value,
-            channel_category_id: row.querySelector('select[name="channel-category"]').value,
-        };
+                loadChannels();
+            }
 
-        const response = await fetch(`/admin/channel`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(updatedChannel)
-        });
+            function cancelEdit(channelId) {
+                const row = document.querySelector(
+                    `[channel-id="${channelId}"]`
+                );
+                const originalChannel = originalChannelData[channelId];
 
-        if (!response.ok) {
-            console.error("Failed to update channel");
-            return;
-        }
+                if (!originalChannel) {
+                    console.error("Original channel data not found");
+                    return;
+                }
 
-        loadChannels();
-    }
-
-    async function deleteChannel(channelId) {
-        const response = await fetch(`/admin/channel/${channelId}`, {
-            method: "DELETE",
-        });
-
-        if (!response.ok) {
-            console.error("Failed to delete channel");
-            return;
-        }
-
-        loadChannels();
-    }
-
-    function cancelEdit(channelId) {
-        const row = document.querySelector(`[channel-id="${channelId}"]`);
-        const originalChannel = originalChannelData[channelId];
-
-        if (!originalChannel) {
-            console.error("Original channel data not found");
-            return;
-        }
-
-        // Restore the original values for this channel
-        row.innerHTML = `
-            <th scope="row">${originalChannel.channel_id}</th>
-            <th>${originalChannel.channel_name}</th>
-            <th>${originalChannel.channel_category_name ?? "- - - - -"}</th>
-            <th>${originalChannel.channel_url}</th>
-            <th>${originalChannel.channel_logo ?? "- - - - -"}</th>
-            <th>
-                <button class="btn btn-primary" onclick="turnOnEditMode(${originalChannel.channel_id})">Edit</button>
-            </th>
-        `;
-    }
-
-
-        async function saveChannelEdit(channelId) {
-            const row = document.querySelector(`[channel-id="${channelId}"]`);
-
-            const updatedChannel = {
-                channel_id: channelId,
-                channel_name: row.querySelector('input[name="channel-name"]').value,
-                channel_url: row.querySelector('input[name="channel-url"]').value,
-                channel_logo: row.querySelector('input[name="channel-logo"]').value,
-                channel_category_id: row.querySelector('select[name="channel-category"]').value,
-            };
-
-            const response = await fetch(`/admin/channel`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(updatedChannel)
-            });
-
-            if (!response.ok) {
-                console.error("Failed to update channel");
-                return;
+                // Restore the original values for this channel
+                row.innerHTML = `
+                    <th scope="row">${originalChannel.channel_id}</th>
+                    <td>${originalChannel.channel_name}</td>
+                    <td>${
+                        originalChannel.channel_category_name ?? "- - - - -"
+                    }</td>
+                    <td>${originalChannel.channel_url}</td>
+                    <td>${originalChannel.channel_logo ?? "- - - - -"}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="turnOnEditMode(${
+                            originalChannel.channel_id
+                        })">Edit</button>
+                    </td>
+                `;
             }
 
             loadChannels();
-        }
+        </script>
 
-        loadChannels();
-    </script>
+        <!-- Channel Form Submission -->
+        <script>
+            const channelForm = document.getElementById("channel-form");
 
-    <!-- channel Form -->
-    <script>
-        const channelForm = document.getElementById("channel-form");
+            channelForm.addEventListener("submit", (e) => {
+                e.preventDefault();
 
-        channelForm.addEventListener("submit", (e) => {
-            e.preventDefault();
+                const formData = new FormData(channelForm);
 
-            const formData = new FormData(channelForm);
+                const dataObject = {};
+                formData.forEach((value, key) => {
+                    dataObject[key] = value;
+                });
 
-            const dataObject = {};
-            formData.forEach((value, key) => {
-                dataObject[key] = value;
+                fetch("/admin/channel", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(dataObject),
+                }).then(loadChannels);
             });
-
-            console.log(dataObject);
-
-            console.log(e);
-            fetch("/admin/channel", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(dataObject)
-            }).then(loadChannels);
-        });
-    </script>
+        </script>
+    </body>
 </html>
