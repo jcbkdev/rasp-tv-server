@@ -61,11 +61,26 @@ export function hasChannel(channel_id: number) {
 
 export function deleteChannel(channel_id: number) {
     if (!hasChannel(channel_id)) return false;
-    const stmt = db.prepare(`DELETE FROM channel WHERE channel_id = ?`);
 
-    const result = stmt.run(channel_id);
+    const transaction = db.transaction(() => {
+        const deleteStmtRelationship1 = db.prepare(
+            `DELETE FROM Relationship_1 WHERE channel_id = ?`
+        );
+        deleteStmtRelationship1.run(channel_id);
 
-    return result;
+        const deleteChannelStmt = db.prepare(
+            `DELETE FROM channel WHERE channel_id = ?`
+        );
+        deleteChannelStmt.run(channel_id);
+    });
+
+    try {
+        transaction();
+        return true;
+    } catch (error) {
+        console.error("Error deleting channel:", error);
+        return false;
+    }
 }
 
 export function getAllChannels(): Channel[] {
